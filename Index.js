@@ -28,7 +28,7 @@ function getUserTotal(invoices ,orders,articlePrices){
   });
   return userTotals;
 }
-function formatDataAsPerRequirement(){
+function formatDataAsPerRequirement(userTotals){
   return  Object.keys(userTotals).map(user => {
     return { user: user, total: userTotals[user] };
 });

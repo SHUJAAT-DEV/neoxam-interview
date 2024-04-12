@@ -1,20 +1,18 @@
-
 async function getFetchDataByUrl(url){
-    const response  = await fetch(url)
-  return  await response.json();
+  const response  = await fetch(url)
+return  await response.json();
+}
+async function loadAllData(){
+      const [orderData, invoicesData, pricesData] = await Promise.all([
+        getFetchDataByUrl("https://static.nx.digital/orders.json"),
+        getFetchDataByUrl("https://static.nx.digital/invoices.json"),
+        getFetchDataByUrl("https://static.nx.digital/prices.json")
+    ]);
+  return {orders: orderData.orders ,invoices:invoicesData.invoices,prices:pricesData.prices}
 }
 
 async function dataManipulation() {
-    //add the refactoring ..
-    const [orderData, invoicesData, pricesData] = await Promise.all([
-      getFetchDataByUrl("https://static.nx.digital/orders.json"),
-      getFetchDataByUrl("https://static.nx.digital/invoices.json"),
-      getFetchDataByUrl("https://static.nx.digital/prices.json")
-  ]);
-    const orders = orderData.orders;
-    const invoices = invoicesData.invoices;
-    const prices = pricesData.prices;
-
+    const{orders ,invoices,prices} = await loadAllData()
     const articlePrices = {};
     prices.forEach(price => {
         articlePrices[price.article] = price.price;

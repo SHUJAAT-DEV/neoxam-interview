@@ -18,15 +18,13 @@ function getArticlePrice(prices){
 }
 
 function getUserTotal(invoices ,orders,articlePrices){
-  const userTotals = {};
-  invoices.forEach(invoice => {
-      const user = invoice.user;
+  return invoices.reduce((acc, invoice) => {
       const order = orders.find(order => order.id === invoice.order);
       const articlePrice = articlePrices[order.article];
       const total = order.quantity * articlePrice;
-      userTotals[user] = (userTotals[user] || 0) + total;
-  });
-  return userTotals;
+      acc[invoice.user] = (acc[invoice.user] || 0) + total;
+      return acc;
+  }, {});
 }
 function formatDataAsPerRequirement(userTotals){
   return  Object.keys(userTotals).map(user => {

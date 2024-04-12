@@ -10,30 +10,39 @@ async function loadAllData(){
     ]);
   return {orders: orderData.orders ,invoices:invoicesData.invoices,prices:pricesData.prices}
 }
-
-async function calculateUserPrice() {
-    const{orders ,invoices,prices} = await loadAllData()
-    const articlePrices = {};
-    prices.forEach(price => {
-        articlePrices[price.article] = price.price;
-    });
-
-    const userTotals = {};
-    // here we calculate the total prices for each user
-    invoices.forEach(invoice => {
-        const user = invoice.user;
-        const order = orders.find(order => order.id === invoice.order);
-        const articlePrice = articlePrices[order.article];
-        const total = order.quantity * articlePrice;
-        userTotals[user] = (userTotals[user] || 0) + total;
-    });
-
-    return  Object.keys(userTotals).map(user => {
-        return { user: user, total: userTotals[user] };
-    });
+function getArticlePrice(prices){
+ return prices.reduce((acc, price) => {
+    acc[price.article] = price.price;
+    return acc;
+}, {});
 }
 
+function getUserTotal(invoices ,orders,articlePrices){
+  const userTotals = {};
+  invoices.forEach(invoice => {
+      const user = invoice.user;
+      const order = orders.find(order => order.id === invoice.order);
+      const articlePrice = articlePrices[order.article];
+      const total = order.quantity * articlePrice;
+      userTotals[user] = (userTotals[user] || 0) + total;
+  });
+  return userTotals;
+}
+function formatDataAsPerRequirement(){
+  return  Object.keys(userTotals).map(user => {
+    return { user: user, total: userTotals[user] };
+});
+}
 
+// now user can easily read the code .
+async function calculateUserPrice() {
+    const{orders ,invoices,prices} = await loadAllData()
+    const articlePrices = getArticlePrice(prices)
+    const userTotals = getUserTotal(invoices ,orders,articlePrices);
+    return formatDataAsPerRequirement(userTotals);
+}
+
+// display the expect user prices 
 calculateUserPrice().then((response)=>{
     console.log("expected user price",  response)
   });

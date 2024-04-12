@@ -11,7 +11,7 @@ async function loadAllData(){
   return {orders: orderData.orders ,invoices:invoicesData.invoices,prices:pricesData.prices}
 }
 
-async function dataManipulation() {
+async function calculateUserPrice() {
     const{orders ,invoices,prices} = await loadAllData()
     const articlePrices = {};
     prices.forEach(price => {
@@ -34,7 +34,7 @@ async function dataManipulation() {
 }
 
 
-  dataManipulation().then((response)=>{
-    console.log("expected",  response)
+calculateUserPrice().then((response)=>{
+    console.log("expected user price",  response)
   });
 

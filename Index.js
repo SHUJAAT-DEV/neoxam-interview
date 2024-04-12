@@ -4,24 +4,7 @@ async function getFetchDataByUrl(url){
   return  await response.json();
 }
 
-  function getUserOrders(invoices){
-    const invoiceList =invoices.invoices;
-    const userOrders ={};
-    for(let i=0; i<invoiceList.length; i++){
-        const invoice = invoiceList[i];
-        const element = invoice.order;
-        const key =invoice.user;
-       if(userOrders[key]){
-         userOrders[key].push(element);
-       }else {
-         userOrders[key]=[element]
-       }
-
-    }
-    return userOrders;
-  }
-
-  async function dataManipulation() {
+async function dataManipulation() {
     //add the refactoring ..
     const [orderData, invoicesData, pricesData] = await Promise.all([
       getFetchDataByUrl("https://static.nx.digital/orders.json"),
